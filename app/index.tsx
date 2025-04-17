@@ -131,6 +131,7 @@ const Call = () => {
 };
 
 const MuteButtons = ({ isAudioMuted, isVideoMuted }: { isAudioMuted: boolean; isVideoMuted: boolean }) => {
+  const [rotation, setRotation] = useState(false);
   const zoom = useZoom();
   const onPressAudio = async () => {
     const mySelf = await zoom.session.getMySelf();
@@ -141,15 +142,14 @@ const MuteButtons = ({ isAudioMuted, isVideoMuted }: { isAudioMuted: boolean; is
   };
 
   const onPressVideo = async () => {
-    const mySelf = await zoom.session.getMySelf();
-    const videoOn = await mySelf.videoStatus.isOn();
-    videoOn ? await zoom.videoHelper.stopVideo() : await zoom.videoHelper.startVideo();
+    !rotation ? await zoom.videoHelper.rotateMyVideo(90) : await zoom.videoHelper.rotateMyVideo(0);
+    setRotation(!rotation);
   };
   return (
     <View style={styles.buttonHolder}>
       <Button title={isAudioMuted ? "Unmute Audio" : "Mute Audio"} onPress={onPressAudio} />
       <View style={styles.spacer} />
-      <Button title={isVideoMuted ? "Unmute Video" : "Mute Video"} onPress={onPressVideo} />
+      <Button title={"Rotate Video"} onPress={onPressVideo} />
     </View>
   );
 };
